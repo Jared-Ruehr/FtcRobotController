@@ -64,8 +64,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name="Basic: Omni Linear OpMode", group="Linear OpMode")
-//@Disabled
-public class BasicOmniOpModeTeamCode extends LinearOpMode {
+
+public class OmniTestOne extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -112,15 +112,17 @@ public class BasicOmniOpModeTeamCode extends LinearOpMode {
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x;
+            double lateral = -gamepad1.left_stick_x;
             double yaw     =  gamepad1.right_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower  = axial + lateral + yaw;
-            double rightFrontPower = axial - lateral - yaw;
-            double leftBackPower   = axial - lateral + yaw;
-            double rightBackPower  = axial + lateral - yaw;
+            // The value for the speed
+            double Wheelspeed = 0.7;
+            double leftFrontPower  = (axial + lateral + yaw) * Wheelspeed ;
+            double rightFrontPower = (axial - lateral - yaw) * Wheelspeed ;
+            double leftBackPower   = (axial - lateral + yaw) * Wheelspeed ;
+            double rightBackPower  = (axial + lateral - yaw) * Wheelspeed ;
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
