@@ -67,7 +67,7 @@
  
  @TeleOp(name = "TeleOpModeCode", group = "LinearOpMode")
  //@Disabled
- public class TeleOpModeCode extends LinearOpMode {
+ public class TeleOpModeCode_Copy extends LinearOpMode {
  
      // Declare OpMode members for each of the 4 motors.
      private ElapsedTime runtime = new ElapsedTime();
@@ -172,14 +172,7 @@
              double hangingPower  = gamepad2.left_stick_y;
              double gripLiftPower  =  gamepad2.right_stick_y;
              
-             //Testing Encoder Code on the Linear Slide Rail 
-             //reset the motor encoder so that it reads zero ticks 
-             motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-             
-             //Turn the motor back on, required because of previous statement
-             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-               //Get the current position of the motor 
-            
+
              
             
                // Send calculated power to wheels
