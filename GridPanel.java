@@ -13,7 +13,7 @@ public class GridPanel extends JPanel {
     private boolean mouseHeld = true;
     public boolean timerRunning = false;
 
-
+//This should be in the diff
     public GridPanel() {
         mouseTimer = new Timer(10, e -> {
             if (mouseHeld) {
