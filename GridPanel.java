@@ -15,7 +15,7 @@ public class GridPanel extends JPanel {
 
 
     public GridPanel() {
-        mouseTimer = new Timer(10, e -> {
+        mouseTimer = new Timer(100, e -> {
             if (mouseHeld) {
                 Point mousePosition = getMousePosition();
                 //System.out.println("Held");
@@ -58,7 +58,7 @@ public class GridPanel extends JPanel {
                 for (Point p : clickedCells) {
                     Point cellBelow = new Point(p.x, p.y + 1);
                     if (p.y < height / cellSize - 1 && !clickedCells.contains(cellBelow)) { //need to check if there is a point below it. if so, stack
-                        updatedCells.add(new Point(p.x + 1, p.y));
+                        updatedCells.add(new Point(p.x +1, p.y));
                     } else {
                         updatedCells.add(new Point(p.x, p.y));
                     }
@@ -77,9 +77,11 @@ public class GridPanel extends JPanel {
         int cols = width / cellSize;
         int rows = height / cellSize;
         g.setColor(Color.BLACK);
+
         for (int i = 0; i <= cols; i++) {
-            g.drawLine(0, i * cellSize, i * cellSize, height);
+            g.drawLine(0, i * cellSize,  i * cellSize, height);
         }
+
         for (int i = 0; i <= rows; i++) {
             g.drawLine(0, i * cellSize, width, i * cellSize);
         }
