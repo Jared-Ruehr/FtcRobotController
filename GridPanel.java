@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GridPanel extends JPanel {
-    private final int cellSize = 5;
+    private final int cellSize = 4;
     private final int height = 250;
     private final int width = 500;
     private final Set<Point> clickedCells = new HashSet<>();
@@ -58,7 +58,7 @@ public class GridPanel extends JPanel {
                 for (Point p : clickedCells) {
                     Point cellBelow = new Point(p.x, p.y + 1);
                     if (p.y < height / cellSize - 1 && !clickedCells.contains(cellBelow)) { //need to check if there is a point below it. if so, stack
-                        updatedCells.add(new Point(p.x +1, p.y));
+                        updatedCells.add(new Point(p.x , p.y + 1));
                     } else {
                         updatedCells.add(new Point(p.x, p.y));
                     }
@@ -79,7 +79,7 @@ public class GridPanel extends JPanel {
         g.setColor(Color.BLACK);
 
         for (int i = 0; i <= cols; i++) {
-            g.drawLine(0, i * cellSize,  i * cellSize, height);
+            g.drawLine(i * cellSize, 0,  i * cellSize, height);
         }
 
         for (int i = 0; i <= rows; i++) {
