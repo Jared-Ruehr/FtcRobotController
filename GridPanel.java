@@ -53,12 +53,14 @@ public class GridPanel extends JPanel {
 
         if (!timerRunning) {
             timerRunning = true;
+
             new Timer(50, t -> {
                 Set<Point> updatedCells = new HashSet<>();
                 for (Point p : clickedCells) {
                     Point cellBelow = new Point(p.x, p.y + 1);
-                    if (p.y < height / cellSize - 1 && !clickedCells.contains(cellBelow)) { //need to check if there is a point below it. if so, stack
-                        updatedCells.add(new Point(p.x + 1 , p.y));
+
+                    if (p.y < height / cellSize + 1 && !clickedCells.contains(cellBelow)) { //need to check if there is a point below it. if so, stack
+                        updatedCells.add(new Point(p.x , p.y +1));
                     } else {
                         updatedCells.add(new Point(p.x, p.y));
                     }
@@ -79,7 +81,7 @@ public class GridPanel extends JPanel {
         g.setColor(Color.BLACK);
 
         for (int i = 0; i <= cols; i++) {
-            g.drawLine(0, i * cellSize,  i * cellSize, height);
+            g.drawLine( i * cellSize, 0,i * cellSize, height);
         }
 
         for (int i = 0; i <= rows; i++) {
