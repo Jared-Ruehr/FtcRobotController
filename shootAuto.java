@@ -123,8 +123,8 @@
          // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
          // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
          // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-         leftFront.setDirection(DcMotor.Direction.FORWARD);
-         rightFront.setDirection(DcMotor.Direction.REVERSE);
+         leftFront.setDirection(DcMotor.Direction.REVERSE);
+         rightFront.setDirection(DcMotor.Direction.FORWARD);
          leftBack.setDirection(DcMotor.Direction.REVERSE);
          rightBack.setDirection(DcMotor.Direction.FORWARD);
          launcher.setDirection(DcMotor.Direction.REVERSE);
@@ -149,9 +149,9 @@
  double position = 1;
          // Wait for the game to start (driver presses START)
          waitForStart();
-         sleep(3000);
-         launcher.setPower(1);
-         encoderDrive(DRIVE_SPEED,-76 ,-76 ,0 ,5);
+         sleep(1000);
+         launcher.setPower(0);
+         encoderDrive(DRIVE_SPEED,100,100,0 ,6);
          trigger.setPosition(1);
          sleep(3000);
          trigger.setPosition(0);
@@ -248,7 +248,7 @@
              leftBack.setPower(Math.abs(speed));
              rightBack.setPower(Math.abs(speed));
              //launcher.setPower(Math.abs(speed));
-             }
+             
              // keep looping while we are still active, and there is time left, and both motors are running.
              // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
              // its target position, the motion will stop.  This is "safer" in the event that the robot will
@@ -266,12 +266,14 @@
                    
  
                  // Display it for the driver.
-                 //telemetry.addData("Running to",  " %7d :%7d", newLeftTarget,  newRightTarget);
-                 telemetry.addData("Currently at",  " at %7d :%7d",
+                 telemetry.addData("Running to",  " %7d :%7d", newLeftTarget,  newRightTarget);
+                 telemetry.addData("Currently at",  " at %7d :%7d: %7d: %7d",
                  leftFront.getCurrentPosition(),rightFront.getCurrentPosition(),leftBack.getCurrentPosition(), rightBack.getCurrentPosition());
                  telemetry.update();
                     }
  
+ 
+         }
              // Stop all motion;
              leftFront.setPower(0);
              rightFront.setPower(0);
