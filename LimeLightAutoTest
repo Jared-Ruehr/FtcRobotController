@@ -1,0 +1,114 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import android.util.Config;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import java.util.Set;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.teamcode.PID;
+
+@Autonomous
+//@Config
+public class LimeLightAutoTest {
+    public static double P = 2;
+    public static double I = 0;
+    public static double D = 0.05;
+     Limelight3A limelight;
+     private PID rotationPID = new PID(P,I,D);
+     private ElapsedTime runtime = new ElapsedTime();
+     private DcMotor leftFrontDrive = null;
+     private DcMotor leftBackDrive = null;
+     private DcMotor rightFrontDrive = null;
+     private DcMotor rightBackDrive = null;
+     private DcMotor launcher = null;
+     private DcMotor intake = null;
+     private Servo trigger = null;
+    //@Override
+    public void runOpMode() throws InterruptedException {
+
+        rotationPID.init(0);
+        rotationPID.setTarget(0);
+        rotationPID.setDoneThresholds(0.05,0.1);
+         limelight = hardwareMap.get(Limelight3A.class, "limelight");
+         leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
+         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
+         leftBack = hardwareMap.get(DcMotor.class, "leftBack");
+         rightBack = hardwareMap.get(DcMotor.class,"rightBack");
+         launcher = hardwareMap.get(DcMotor.class,"launcher");
+         trigger = hardwareMap.get(Servo.class,"trigger");
+
+
+
+         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
+         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
+         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
+         leftFront.setDirection(DcMotor.Direction.REVERSE);
+         rightFront.setDirection(DcMotor.Direction.FORWARD);
+         leftBack.setDirection(DcMotor.Direction.REVERSE);
+         rightBack.setDirection(DcMotor.Direction.FORWARD);
+         launcher.setDirection(DcMotor.Direction.REVERSE);
+         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+         rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+         // Send telemetry message to indicate successful Encoder reset
+         telemetry.addData("Starting at",  "%7d :%7d",
+                          leftFront.getCurrentPosition(),
+                          rightFront.getCurrentPosition(),
+                          leftBack.getCurrentPosition(),
+                          rightBack.getCurrentPosition(),
+                          launcher.getCurrentPosition());
+         telemetry.update();
+ double position = 1;
+         // Wait for the game to start (driver presses START)
+         waitForStart();
+         sleep(1000);
+         launcher.setPower(1);
+         encoderDrive(DRIVE_SPEED,30,30,0,5);
+
+         while (true) {
+         LLResult result = limelight.getLatestResult();
+         if (result != null && result.isValid()) {
+         currentAngle = Math.toRadians(result.getTx());
+         double rotationPower = rotationPID.tick(currentAngle);
+         leftFront.setPower(rotationPower);
+         rightFront.setPower(rotationPower);
+         leftBack.setPower(-rotationPower);
+         rightBack.setPower(-rotationPower);
+         //launcher.setPower();
+          if (Math.abs(result.getTx()) < 0.5){
+           break;
+        }
+
+         }
+
+         //trigger.setPosition(1);
+         sleep(3000);
+         //trigger.setPosition(0);
+         sleep(3000);
+        // trigger.setPosition(1);
+         sleep(3000);
+        // trigger.setPosition(0);
+         sleep(3000);
+        // trigger.setPosition(1);
+         sleep(3000);
+    }
+}
+}
