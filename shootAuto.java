@@ -1,7 +1,7 @@
  /* Copyright (c) 2017 FIRST. All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted (subject to the limitations in the disclaimer below) provided that
+  * uare permitted (subject to the limitations in the disclaimer below) provided that
   * the following conditions are met:
   *
   * Redistributions of source code must retain the above copyright notice, this list
@@ -147,23 +147,14 @@
                           launcher.getCurrentPosition());
          telemetry.update();
  double position = 1;
+ 
          // Wait for the game to start (driver presses START)
          waitForStart();
          sleep(1000);
-         launcher.setPower(0);
-         encoderDrive(DRIVE_SPEED,100,100,0 ,6);
-         trigger.setPosition(1);
-         sleep(3000);
-         trigger.setPosition(0);
-         sleep(3000);
-         trigger.setPosition(1);
-         sleep(3000);
-         trigger.setPosition(0);
-         sleep(3000);
-         trigger.setPosition(1);
-         sleep(3000);
-         trigger.setPosition(0);
-         encoderDrive(DRIVE_SPEED,0,0,0,100);
+         encoderDrive(DRIVE_SPEED,30,30,0,5);
+         shoot(1, 3);
+         
+         //encoderDrive(DRIVE_SPEED,20,-20,0,5);
          //launcher.setPower(0);
          //encoderDrive(TURN_SPEED, 5, 5, 0, 50);
          // Step through each leg of the path,
@@ -201,6 +192,28 @@
    }
  
     /*
+    *shooting loop
+      */
+      
+     public void shoot(double power, int number_of_balls) {
+       long trigger_up_sleep = 1000;
+       long trigger_down_sleep = 1000;
+       double trigger_position_up = 0.87;
+       double trigger_position_down = 1;
+       launcher.setPower(power);
+       
+         for (int i=0; i<number_of_balls; i++){
+          sleep(trigger_down_sleep);
+         trigger.setPosition(trigger_position_up);
+         sleep(trigger_up_sleep);
+         trigger.setPosition(trigger_position_down);
+          
+         }
+         
+     }
+     
+     
+         /*
       *  Method to perform a relative move, based on encoder counts.
       *  Encoders are not reset as the move is based on the current position./      *  Move will stop if any of three conditions occur:
       *  1) Move gets to the desired position
