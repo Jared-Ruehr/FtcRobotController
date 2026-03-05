@@ -31,13 +31,17 @@
  
  import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  import java.util.Set;
+ import java.util.List;
  import com.qualcomm.robotcore.hardware.Servo;
  import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  import com.qualcomm.robotcore.hardware.DcMotor;
  import com.qualcomm.robotcore.util.ElapsedTime;
-
+ import com.qualcomm.hardware.limelightvision.LLResult;
+ import com.qualcomm.hardware.limelightvision.LLResultTypes;
+ import com.qualcomm.hardware.limelightvision.LLStatus;
+ import com.qualcomm.hardware.limelightvision.Limelight3A;
 /*
   * This OpMode illustrates the concept of driving a path based on encoder counts.
   * The code is structured as a LinearOpMode
@@ -64,7 +68,7 @@
   * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
   */
 
- @Autonomous(name="Shoot Auto DO NOT USE", group="Robot")
+ @Autonomous(name="Shoot Auto", group="Robot")
  
  public class shootAuto extends LinearOpMode {
 
@@ -91,6 +95,7 @@
      private Servo           trigger     = null; 
      private DcMotor         intake      = null;
      private ElapsedTime     runtime = new ElapsedTime();
+
  
      // Calculate the COUNTS_PER_INCH for your specific drive train.
      // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -105,11 +110,13 @@
                                                        (WHEEL_DIAMETER_INCHES * 3.1415);
      static final double     DRIVE_SPEED             = 0.6;
      static final double     TURN_SPEED              = 0.4;
- 
+    
+     Limelight3A limelight;
+     
      @Override
      public void runOpMode() throws InterruptedException {
 
- 
+         
          // Initialize the drive system variables.
          leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
          rightFront = hardwareMap.get(DcMotor.class, "rightFront");
@@ -117,9 +124,14 @@
          rightBack = hardwareMap.get(DcMotor.class,"rightBack");
          launcher = hardwareMap.get(DcMotor.class,"launcher");
          trigger = hardwareMap.get(Servo.class,"trigger");
+         limelight = hardwareMap.get(Limelight3A.class, "Limelight Camera");
+        
+         limelight.setPollRateHz(100);
+         limelight.start();
+         
+         limelight.pipelineSwitch(0);
          
          
-
          // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
          // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
          // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
@@ -153,39 +165,38 @@
          sleep(1000);
          encoderDrive(DRIVE_SPEED,30,30,0,5);
          shoot(1, 3);
-         
-         //encoderDrive(DRIVE_SPEED,20,-20,0,5);
-         //launcher.setPower(0);
-         //encoderDrive(TURN_SPEED, 5, 5, 0, 50);
-         // Step through each leg of the path,
-         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        // encoderDrive(TURN_SPEED,  12, -12, 0,4.0);
-        //encoderDrive(DRIVE_SPEED, 24, -24, 0,4.0);
-        sleep(10); 
-        //encoderDrive(DRIVE_SPEED,-70,-60, 0, 4.0);
+         sleep(10); 
+          
+         LLResult result = limelight.getLatestResult();
+          if (result != null && result.isValid()) {
+           double tx = result.getTx();
+           double ty = result.getTy();
+           double ta = result.getTa();
+           
+          telemetry.addData("target x", tx);
+          telemetry.addData("target y", ty);
+          telemetry.addData("target a", ta);
  
-           // S1: Forward 33 Inches with 5 Sec timeout
-            //encoderDrive(DRIVE_SPEED, 31,  -31, -60, 5.0);
+          List<FiducialResult> fiducials = result.getFiducialResults();
+          for (FiducialResult fr : fiducials) {
+     int id = fr.getFiducialId(); // The ID number of the fiducial
+     telemetry.addData("Fiducial " + id); 
+     telemetry.update();
+          }
+          }
+           else {
+            telemetry.addData("none","none");
+            telemetry.update();
+           }
+          
+           
+         // S1: Forward 33 Inches with 5 Sec timeout
+         //encoderDrive(DRIVE_SPEED, 31,  -31, -60, 5.0);
          
-      //move slide rail downward to hang specimin
-      //variable 5= time out; variable 4= linear slide; variable 3= turn; variable 2= 
-      //encoderDrive(DRIVE_SPEED, 0, 0,-60,4.0);
-      //release the grip of the claw
-      //encoderDrive(DRIVE_SPEED, 0, 0, 0, 4.0);
-      //move robot backwards until it hits the wall
-     //encoderDrive(DRIVE_SPEED, 0, -43, -13, 5.0);  // S1: backwards 33 Inches with 5 Sec timeout
-     //move linear slide rail backwards
+ 
       
-      //turn towards parking zone
-      //encoderDrive(DRIVE_SPEED,  23,  -33, 1.0); // S1: Right side: 33inches Left side:
-      //drive forwards towards parking zone
-      //encoderDrive(DRIVE_SPEED,  53,  33, 5.0); // S1: Forward 33 Inches with 5 Sec timeout
-      
          
          
-      // telemetry.addData("Path", "error");
-         telemetry.addData("Path", "Complete");
-         telemetry.update();
          sleep(10000);  // pause to display final telemetry message.
          
        
