@@ -167,28 +167,7 @@
          shoot(1, 3);
          sleep(10); 
           
-         LLResult result = limelight.getLatestResult();
-          if (result != null && result.isValid()) {
-           double tx = result.getTx();
-           double ty = result.getTy();
-           double ta = result.getTa();
-           
-          telemetry.addData("target x", tx);
-          telemetry.addData("target y", ty);
-          telemetry.addData("target a", ta);
- 
-          List<FiducialResult> fiducials = result.getFiducialResults();
-          for (FiducialResult fr : fiducials) {
-     int id = fr.getFiducialId(); // The ID number of the fiducial
-     telemetry.addData("Fiducial " + id); 
-     telemetry.update();
-          }
-          }
-           else {
-            telemetry.addData("none","none");
-            telemetry.update();
-           }
-          
+         
            
          // S1: Forward 33 Inches with 5 Sec timeout
          //encoderDrive(DRIVE_SPEED, 31,  -31, -60, 5.0);
@@ -222,8 +201,25 @@
          }
          
      }
-     
-     
+    public int cameraNumber() 
+    {LLResult result = limelight.getLatestResult();
+          if (result != null && result.isValid()) {
+          List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+          for (LLResultTypes.FiducialResult fr : fiducials){
+          
+     int id = fr.getFiducialId(); // The ID number of the fiducial
+      if (id>20 && id<24){
+      telemetry.addData("Fiducial " + id,"Result"); 
+     telemetry.update();
+         return (id); }
+          
+          }}
+           else {
+            telemetry.addData("none","none");
+            telemetry.update();
+           }
+          return(0);
+     }
          /*
       *  Method to perform a relative move, based on encoder counts.
       *  Encoders are not reset as the move is based on the current position./      *  Move will stop if any of three conditions occur:
