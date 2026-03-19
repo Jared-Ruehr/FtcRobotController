@@ -166,7 +166,29 @@
          encoderDrive(DRIVE_SPEED,30,30,0,5);
          shoot(1, 3);
          sleep(10); 
-          
+         
+         //Turn to face april tag
+         encoderDrive(DRIVE_SPEED,-22,22,0,5);
+         //Camera Number
+         int aprilId = cameraNumber();
+         //Turn to face ramp
+         encoderDrive(DRIVE_SPEED,-11,11,0,5);
+         //If ID==21
+         
+         //then drive 1 tile
+         //drive distance=1
+         //ElseIfID==22
+         //then drive 1/2
+        // drive distance=1/2
+         //ElseIfID==23
+         //then don't drive
+         //spinner on
+         //drive forward 2 tiles
+         //stop spinner
+         //drive backwards
+        //drive(-drive distance)
+        //turn shot
+       
          
            
          // S1: Forward 33 Inches with 5 Sec timeout
@@ -246,6 +268,89 @@
              newRightTarget = rightBack.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
              //newLauncherTarget = launcher.getCurrentPosition() +(int)(launch * COUNTS_PER_INCH);
              
+           //boolean triggerActive = false;
+           //double position = 1;
+
+             leftFront.setTargetPosition(newLeftTarget);
+             rightFront.setTargetPosition(newRightTarget);
+             leftBack.setTargetPosition(newLeftTarget);
+             rightBack.setTargetPosition(newRightTarget);
+ 
+             // Turn On RUN_TO_POSITION
+             leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+             //launcher.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+ 
+             // reset the timeout time and start motion.
+             runtime.reset();
+             leftFront.setPower(Math.abs(speed));
+             rightFront.setPower(Math.abs(speed));
+             leftBack.setPower(Math.abs(speed));
+             rightBack.setPower(Math.abs(speed));
+             //launcher.setPower(Math.abs(speed));
+             
+             // keep looping while we are still active, and there is time left, and both motors are running.
+             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+             // its target position, the motion will stop.  This is "safer" in the event that the robot will
+             // always end the motion as soon as possible.
+             // However, if you require that BOTH motors have finished their moves before the robot continues
+             // onto the next step, use (isBusy() || isBusy()) in the loop test.
+             while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (leftFront.isBusy() && rightFront.isBusy()) &&
+                    (leftBack.isBusy() && rightBack.isBusy())) {
+ 
+                    
+         
+             
+                   
+ 
+                 // Display it for the driver.
+                 telemetry.addData("Running to",  " %7d :%7d", newLeftTarget,  newRightTarget);
+                 telemetry.addData("Currently at",  " at %7d :%7d: %7d: %7d",
+                 leftFront.getCurrentPosition(),rightFront.getCurrentPosition(),leftBack.getCurrentPosition(), rightBack.getCurrentPosition());
+                 telemetry.update();
+                    }
+ 
+ 
+         }
+             // Stop all motion;
+             leftFront.setPower(0);
+             rightFront.setPower(0);
+             leftBack.setPower(0);
+             rightBack.setPower(0);
+             //launcher.setPower(0);
+ 
+             // Turn off RUN_TO_POSITION
+             leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+             rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+             leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+             rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+             //launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+ 
+             sleep(250);   // optional pause after each move.
+             
+         
+     }
+    
+public void encoderStrafe(double speed, 
+                              double frontInches, double backInches,
+                              double timeoutS) {
+         int newLeftFrontTarget;
+         int newRightFrontTarget;
+         int newLeftBackTarget;
+         int newRightBackTarget;
+                             
+         // Ensure that the OpMode is still active
+         if (opModeIsActive()) {
+
+           // Determine new target position, and pass to motor controller
+             newLeftFrontTarget = leftFront.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+             newLeftBackTarget = leftBack.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+             newRightFrontTarget = rightFront.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+             newRightBackTarget = rightBack.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
            //boolean triggerActive = false;
            //double position = 1;
 
